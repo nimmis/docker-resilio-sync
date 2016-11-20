@@ -1,0 +1,3 @@
+#!/bin/sh
+exec 2>&1
+exec /usr/local/bin/rslsync --config /etc/rslsync/rslsync.conf --log /var/log/rslsync.log --nodaemon

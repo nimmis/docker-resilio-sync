@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# set secret key for rslsync
+#
+# (c) 2016 nimmis <kjell.havneskold@gmail.com>
+#
+
+if [ -z $RSLSYNC_SECRET ]; then
+  RSLSYNC_SECRET=`/usr/local/bin/rslsync --generate-secret`
+  echo "add -e RSLSYNC_SECRET=$RSLSYNC_SECRET to your other nodes to sync"
+fi
+
+sed -i "s/MY_SECRET_1/$RSLSYNC_SECRET/g" /etc/rslsync/rslsync.conf
+
