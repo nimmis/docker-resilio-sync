@@ -14,4 +14,5 @@ RUN apk update && apk upgrade && \
 VOLUME /data
 
 EXPOSE 33333
+EXPOSE 8888
 
