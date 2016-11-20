@@ -5,10 +5,74 @@
 # (c) 2016 nimmis <kjell.havneskold@gmail.com>
 #
 
-if [ -z $RSLSYNC_SECRET ]; then
-  RSLSYNC_SECRET=`/usr/local/bin/rslsync --generate-secret`
-  echo "add -e RSLSYNC_SECRET=$RSLSYNC_SECRET to your other nodes to sync"
+# make config directory
+
+mkdir -p /etc/rslsync
+
+# check device name
+
+if [ -z $RSLSYNC_NAME ]; then
+  RSLSYNC_NAME=`hostname`
 fi
 
-sed -i "s/MY_SECRET_1/$RSLSYNC_SECRET/g" /etc/rslsync/rslsync.conf
+# create base configuration
 
+cat <<EOT > /etc/rslsync/rslsync.conf
+{
+  "storage_path" : "/root",
+  "listening_port" : 33333,
+  "use_upnp" : false,
+  "vendor" : "docker",
+  "device_name" : "$RSLSYNC_NAME", 
+  "pid_file" : "/var/run/rslsync.pid",
+EOT
+# check to see if webui should be activated
+
+if [ -z $RSLSYNC_USER ] ; then
+  # non webui version
+
+  echo "non-WEBUI mode activated, /data is synced"
+
+  # handle secret key
+  if [ -z $RSLSYNC_SECRET ]; then                                                                             
+    RSLSYNC_SECRET=`/usr/local/bin/rslsync --generate-secret`                                                 
+    echo "add -e RSLSYNC_SECRET=$RSLSYNC_SECRET to your other nodes to sync"                                
+  fi 
+
+
+  cat <<EOT >> /etc/rslsync/rslsync.conf
+  "shared_folders" :
+  [
+    {
+      "secret" : "$RSLSYNC_SECRET", // required field - use --generate-secret in command line to create new secret
+      "dir" : "/data", // * required field
+      "use_relay_server" : true, //  use relay server when direct connection fails
+      "use_tracker" : true,
+      "search_lan" : true,
+      "use_sync_trash" : true, // enable SyncArchive to store files deleted on remote devices
+      "overwrite_changes" : false, // restore modified files to original version, ONLY for Read-Only folders
+      "known_hosts" : // specify hosts to attempt connection without additional search
+      [
+      ]
+    }
+  ]
+}
+EOT
+
+else
+
+  echo "WEBUI mode activated"
+  if [ -z $RSLSYNC_PASS ]; then
+     RSLSYNC_PASS=`date +%s | sha256sum | base64 | head -c 10 ; echo`
+     echo "RSLSYNC_PASS not set, password generated, use "$RSLSYNC_PASS" as password"
+  fi
+  cat <<EOT >> /etc/rslsync/rslsync.conf
+  "webui" :
+  {
+    "listen" : "0.0.0.0:8888",
+    "login" : "$RSLSYNC_USER",
+    "password" : "$RSLSYNC_PASS"
+  }
+}
+EOT
+fi
