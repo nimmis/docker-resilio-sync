@@ -1,6 +1,8 @@
 BitTorrent Sync using Resilio Sync
 ==================================
 
+![](https://img.shields.io/docker/pulls/nimmis/resilio-sync.svg)
+
 This is a small container [![](https://images.microbadger.com/badges/image/nimmis/resilio-sync.svg)](https://microbadger.com/images/nimmis/resilio-sync "Get your own image badge on microbadger.com") using Resilio Sync client to syncronize data between clients.
 
 Sync skips the cloud and finds the shortest path between devices when transferring data. No Cloud. No uploading to third party servers. Just fast, simple file syncing.

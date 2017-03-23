@@ -5,7 +5,7 @@ MAINTAINER nimmis <kjell.havneskold@gmail.com>
 COPY root/. /
 
 RUN apk update && apk upgrade && \
-    apk add zip && \
+    apk add zip curl && \
     cd /root && \
     curl https://download-cdn.resilio.com/stable/linux-x64/resilio-sync_x64.tar.gz | tar xfz - && \
     mv rslsync /usr/local/bin && \
