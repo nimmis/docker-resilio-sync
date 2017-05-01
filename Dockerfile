@@ -2,6 +2,9 @@ FROM nimmis/alpine-glibc
 
 MAINTAINER nimmis <kjell.havneskold@gmail.com>
 
+ENV RSLSYNC_SIZE=1000 \
+    RSLSYNC_TRASH_TIME=30 \
+    RSLSYNC_TRASH=true
 COPY root/. /
 
 RUN apk update && apk upgrade && \

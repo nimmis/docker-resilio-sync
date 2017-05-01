@@ -23,6 +23,8 @@ cat <<EOT > /etc/rslsync/rslsync.conf
   "listening_port" : 33333,
   "use_upnp" : false,
   "vendor" : "docker",
+  "max_file_size_for_versioning" : $RSLSYNC_SIZE,
+  "sync_trash_ttl" : $RSLSYNC_TRASH_TIME,
   "device_name" : "$RSLSYNC_NAME", 
   "pid_file" : "/var/run/rslsync.pid",
 EOT
@@ -49,7 +51,7 @@ if [ -z $RSLSYNC_USER ] ; then
       "use_relay_server" : true, //  use relay server when direct connection fails
       "use_tracker" : true,
       "search_lan" : true,
-      "use_sync_trash" : true, // enable SyncArchive to store files deleted on remote devices
+      "use_sync_trash" : $RSLSYNC_TRASH, // enable SyncArchive to store files deleted on remote devices
       "overwrite_changes" : false, // restore modified files to original version, ONLY for Read-Only folders
       "known_hosts" : // specify hosts to attempt connection without additional search
       [
