@@ -25,7 +25,35 @@ This variable defines the name shown on other nodes, if not defined it will get 
 This will start a container with then name **database**
 
 	docker run -d -e RSLSYNC_NAME=database -p 33333:33333 nimmis/resilio-sync
+
+### RSLSYNC_TRASH
+
+This variable defines if files removed from sync slaves should be put in an archive folder for a time defined by the variable **RSLSYNC&#95;TRASH&#95;TIME** before removed. 
+
+Default value is **true**, to disable this feature add
+
+	-e RSLSYNC_TRASH=false
+
+to the docker start command
+
+### RSLSYNC&#95;TRASH_TIME
+
+This variable defines how many days a file will be kept in the achive folder before it is removed. The variable is defined i days and the default value is 30 days. To change the time so achive files are saved 1 week add
+
+	-e RSLSYNC_TRASH_TIME=7
 	
+to the docker start command.
+
+### RSLSYNC_SIZE
+
+This variable defines the maximum size of files to be synced. The variable is defined in MB and the default value is 1000 MB (1GB).
+
+To change maxmimum file size to 50 MB add
+
+	-e RSLSYNC_SIZE=50
+
+to the docker start command
+
 ### syncing local files
 
 Inside the container the /data is the default sync directory, to link this to a local file system you can use the **-v** flag
