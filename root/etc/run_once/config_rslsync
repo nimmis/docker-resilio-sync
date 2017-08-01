@@ -15,6 +15,12 @@ if [ -z $RSLSYNC_NAME ]; then
   RSLSYNC_NAME=`hostname`
 fi
 
+# check sync path
+
+if [ -z $RSLSYNC_PATH ]; then
+  RSLSYNC_PATH="/data"
+fi
+
 # create base configuration
 
 cat <<EOT > /etc/rslsync/rslsync.conf
@@ -33,7 +39,7 @@ EOT
 if [ -z $RSLSYNC_USER ] ; then
   # non webui version
 
-  echo "non-WEBUI mode activated, /data is synced"
+  echo "non-WEBUI mode activated, $RSLSYNC_PATH is synced"
 
   # handle secret key
   if [ -z $RSLSYNC_SECRET ]; then                                                                             
@@ -47,7 +53,7 @@ if [ -z $RSLSYNC_USER ] ; then
   [
     {
       "secret" : "$RSLSYNC_SECRET", // required field - use --generate-secret in command line to create new secret
-      "dir" : "/data", // * required field
+      "dir" : "$RSLSYNC_PATH", // * required field
       "use_relay_server" : true, //  use relay server when direct connection fails
       "use_tracker" : true,
       "search_lan" : true,

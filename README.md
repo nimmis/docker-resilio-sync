@@ -92,6 +92,14 @@ The sync mode version is made for syncing one directory only (you can manualy co
 
 This variable contains the secret key fore this directory, if empty or missing a new secret key is generated. This key can then be used to start more sync klient for the data.
 
+### RSLSYNC_PATH
+
+This variable controls which folder is synced (default = /data) and comes in handy when using data containers.
+To use it add the necessary --volumes-from option and set the RSLSYNC_PATH value to a VOLUME path from the the data container:
+
+	docker run -d --volumes-from <data-container> -e RSLSYNC_PATH=/other/location/in/data/container --name sync -p 33333:33333 nimmis/resilio-sync
+
+
 ### Run container on first sync node
 
 The first nod creates a uniq secret used to sync all nodes, map the directory you wan't to be syncronized to /data in the container.
