@@ -21,22 +21,39 @@ if [ -z $RSLSYNC_PATH ]; then
   RSLSYNC_PATH="/data"
 fi
 
+# prepare to run as a different user
+
+if [ -z $RUNAS_USER ]; then
+  USER_HOME="/home/$RUNAS_USER"
+  addgroup -g $RUNAS_GID -S $RUNAS_GROUP
+  adduser -u $RUNAS_UID -D -S -G $RUNAS_GROUP $RUNAS_USER
+
+  sed -i'' 's/root/$RUNAS_USER/' /etc/sv/rslsync/run
+
+  chown -R $RUNAS_USER /etc/rslsync
+  touch /var/log/rslsync.log && chown -R $RUNAS_USER /var/log/rslsync.log
+
+  chown -R $RUNAS_USER $RSLSYNC_PATH
+else
+  USER_HOME="/root"
+fi
+
 # create base configuration
 
 cat <<EOT > /etc/rslsync/rslsync.conf
 {
-  "storage_path" : "/root",
+  "storage_path" : "$USER_HOME",
   "listening_port" : 33333,
   "use_upnp" : false,
   "vendor" : "docker",
   "max_file_size_for_versioning" : $RSLSYNC_SIZE,
   "sync_trash_ttl" : $RSLSYNC_TRASH_TIME,
   "device_name" : "$RSLSYNC_NAME", 
-  "pid_file" : "/var/run/rslsync.pid",
+  "pid_file" : "$USER_HOME/rslsync.pid",
 EOT
 # check to see if webui should be activated
 
-if [ -z $RSLSYNC_USER ] ; then
+if [ -z $RSLSYNC_PASS ] ; then
   # non webui version
 
   echo "non-WEBUI mode activated, $RSLSYNC_PATH is synced"
@@ -70,7 +87,7 @@ EOT
 else
 
   echo "WEBUI mode activated"
-  if [ -z $RSLSYNC_PASS ]; then
+  if [ -z $RSLSYNC_USER ]; then
      RSLSYNC_PASS=`date +%s | sha256sum | base64 | head -c 10 ; echo`
      echo "RSLSYNC_PASS not set, password generated, use "$RSLSYNC_PASS" as password"
   fi
