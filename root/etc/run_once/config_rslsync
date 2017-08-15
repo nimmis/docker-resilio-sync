@@ -53,7 +53,7 @@ cat <<EOT > /etc/rslsync/rslsync.conf
 EOT
 # check to see if webui should be activated
 
-if [ -z $RSLSYNC_PASS ] ; then
+if [ -z $RSLSYNC_USER ] ; then
   # non webui version
 
   echo "non-WEBUI mode activated, $RSLSYNC_PATH is synced"
@@ -87,7 +87,7 @@ EOT
 else
 
   echo "WEBUI mode activated"
-  if [ -z $RSLSYNC_USER ]; then
+  if [ -z $RSLSYNC_PASS ]; then
      RSLSYNC_PASS=`date +%s | sha256sum | base64 | head -c 10 ; echo`
      echo "RSLSYNC_PASS not set, password generated, use "$RSLSYNC_PASS" as password"
   fi
