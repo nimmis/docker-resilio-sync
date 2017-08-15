@@ -54,6 +54,11 @@ To change maxmimum file size to 50 MB add
 
 to the docker start command
 
+### RUNAS_USER
+
+This variable (along with RUNAS_UID, RUNAS_GROUP and RUNAS_GID) provide a way to control which user will run Resilio Sync and own the synced files.
+Useful when dealing with shared volumes.
+
 ### syncing local files
 
 Inside the container the /data is the default sync directory, to link this to a local file system you can use the **-v** flag
