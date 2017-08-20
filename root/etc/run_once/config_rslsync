@@ -24,18 +24,18 @@ fi
 # prepare to run as a different user
 
 if [ -z $RUNAS_USER ]; then
+  USER_HOME="/root"
+else
   USER_HOME="/home/$RUNAS_USER"
   addgroup -g $RUNAS_GID -S $RUNAS_GROUP
   adduser -u $RUNAS_UID -D -S -G $RUNAS_GROUP $RUNAS_USER
 
-  sed -i'' 's/root/$RUNAS_USER/' /etc/sv/rslsync/run
+  sed -i'' "s/root/$RUNAS_USER/" /etc/sv/rslsync/run
 
   chown -R $RUNAS_USER /etc/rslsync
   touch /var/log/rslsync.log && chown -R $RUNAS_USER /var/log/rslsync.log
 
   chown -R $RUNAS_USER $RSLSYNC_PATH
-else
-  USER_HOME="/root"
 fi
 
 # create base configuration
