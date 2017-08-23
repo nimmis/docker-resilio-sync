@@ -33,7 +33,6 @@ else
   sed -i'' "s/root/$RUNAS_USER/" /etc/sv/rslsync/run
 
   chown -R $RUNAS_USER /etc/rslsync
-  touch /var/log/rslsync.log && chown -R $RUNAS_USER /var/log/rslsync.log
 
   chown -R $RUNAS_USER $RSLSYNC_PATH
 fi
