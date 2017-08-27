@@ -1,3 +1,7 @@
 #!/bin/sh
 exec 2>&1
-su -c "/usr/local/bin/rslsync --config /etc/rslsync/rslsync.conf --nodaemon" -s /bin/sh root
+LOG_LOCATION=""
+if [ -z $LOG_TO_STDOUT ]; then
+  LOG_LOCATION=" --log /var/log/rslsync.log "
+fi
+su -c "/usr/local/bin/rslsync --config /etc/rslsync/rslsync.conf $LOG_LOCATION --nodaemon" -s /bin/sh root

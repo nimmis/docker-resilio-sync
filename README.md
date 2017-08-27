@@ -59,6 +59,11 @@ to the docker start command
 This variable (along with RUNAS_UID, RUNAS_GROUP and RUNAS_GID) provide a way to control which user will run Resilio Sync and own the synced files.
 Useful when dealing with shared volumes.
 
+### LOG_TO_STDOUT
+
+The default logging uses file /var/log/rslsync.log.
+By defining the LOG_TO_STDOUT variable the Resilio Sync logs are outputted to stdout.
+
 ### syncing local files
 
 Inside the container the /data is the default sync directory, to link this to a local file system you can use the **-v** flag
