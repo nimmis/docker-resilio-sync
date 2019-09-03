@@ -21,18 +21,36 @@ if [ -z $RSLSYNC_PATH ]; then
   RSLSYNC_PATH="/data"
 fi
 
+# prepare to run as a different user
+
+if [ -z $RUNAS_USER ]; then
+  USER_HOME="/root"
+else
+  USER_HOME="/home/$RUNAS_USER"
+  addgroup -g $RUNAS_GID -S $RUNAS_GROUP
+  adduser -u $RUNAS_UID -D -S -G $RUNAS_GROUP $RUNAS_USER
+
+  chown -R $RUNAS_USER /etc/rslsync
+  if [ -z $LOG_TO_STDOUT ]; then
+    touch /var/log/rslsync.log
+    chown -R $RUNAS_USER /var/log/rslsync.log
+  fi
+
+  chown -R $RUNAS_USER $RSLSYNC_PATH
+fi
+
 # create base configuration
 
 cat <<EOT > /etc/rslsync/rslsync.conf
 {
-  "storage_path" : "/root",
+  "storage_path" : "$USER_HOME",
   "listening_port" : 33333,
   "use_upnp" : false,
   "vendor" : "docker",
   "max_file_size_for_versioning" : $RSLSYNC_SIZE,
   "sync_trash_ttl" : $RSLSYNC_TRASH_TIME,
   "device_name" : "$RSLSYNC_NAME", 
-  "pid_file" : "/var/run/rslsync.pid",
+  "pid_file" : "$USER_HOME/rslsync.pid",
 EOT
 # check to see if webui should be activated
 
