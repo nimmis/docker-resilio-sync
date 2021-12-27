@@ -1,3 +1,8 @@
 #!/bin/sh
 exec 2>&1
-exec /usr/local/bin/rslsync --config /etc/rslsync/rslsync.conf --log /var/log/rslsync.log --nodaemon
+source /etc/envvars
+LOG_LOCATION=""
+if [ -z $LOG_TO_STDOUT ]; then
+  LOG_LOCATION=" --log /var/log/rslsync.log "
+fi
+su -c "/usr/local/bin/rslsync --config /etc/rslsync/rslsync.conf $LOG_LOCATION --nodaemon" -s /bin/sh $RUNAS_USER
